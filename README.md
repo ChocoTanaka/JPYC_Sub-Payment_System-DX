@@ -1,19 +1,16 @@
 # JPYC Sub-Payment System DX v2(Web版)
 
-MetaMaskから**支払書類を作成し、かつそれを証憑と連動させることができる**アプリです。
+ブロックチェーン上に**支払書類を作成し、かつそれを証憑と連動させることができる**アプリです。
 
 請求書の明細・但し書き・税区分などの**追加書類に強い**請求書特化型ツールとして作っています。
 
----
 
-## すぐに試す
-- **Web版** → [ここから使う](https://chocotanaka.tanakasenki-subpay.jp/)
-- **Androidアプリ版** → [Google Play](https://play.google.com/store/apps/details?id=com.tanakasenki.eip681pay&hl=ja)
 
 ## 主な特徴
-- ERC-681準拠のQR決済対応
-- MetaMask（またはBase Wallet推奨）でスムーズに支払い
-- ノンカストディ（直接送金）
+
+- 支払用紙を紙とブロックチェーンの両方で作成することで、証憑を持った送金を可能に
+- 締切のある取引や、「誰がこの取引の相手だったのか」分かる送金を可能に
+- 紙とデジタルの連動で、あとでの突合もスムーズに可能
 
 ---
 
@@ -57,6 +54,16 @@ MetaMaskから**支払書類を作成し、かつそれを証憑と連動させ�
 
 詳細な説明・スクリーンショットは[SubPayment解説2.pdf](https://github.com/ChocoTanaka/Metamask_EIP-681_Pay_Web/blob/subpay-v2/SubPaymentv2%E8%A7%A3%E8%AA%AC.pdf)を参照してください。
 
+## 索引
+こちらから、payeeが自分のアドレスのものを索引してください。
+
+[リンク](https://polygonscan.com/address/0xA14E673D100cfe159CFfA4bACd6fd1BfEcbAff88#events)
+
+もしくは、polygonscanから自分のアドレスを検索お願いいたします。
+
+[リンク](https://polygonscan.com/)
+
+---
 ## 注意
 - Polygonネットワーク限定（ガス代はPOLなどで別途必要）
 - JPYCの実用決済ツールとして、振込に近い形で使えるよう設計しています
