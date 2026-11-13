@@ -1,4 +1,4 @@
-# JPYC Sub-Payment System v2(Web版)
+# JPYC Sub-Payment System DX v2(Web版)
 
 MetaMaskから**支払書類を作成し、かつそれを証憑と連動させることができる**アプリです。
 

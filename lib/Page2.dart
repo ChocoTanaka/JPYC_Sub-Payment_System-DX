@@ -224,7 +224,7 @@ class _MPSsState_Write extends State<Page2> {
                                       "宛名:",
                                       style: const TextStyle(fontSize: 28),
                                     ),
-                                    const SizedBox(width: 10),
+                                    const SizedBox(width: 20),
                                     Expanded(
                                       child: TextFormField(
                                         textAlign: TextAlign.center,
@@ -281,6 +281,7 @@ class _MPSsState_Write extends State<Page2> {
                       "tag:",
                       style: const TextStyle(fontSize: 28),
                     ),
+                    const SizedBox(width: 20),
                     Expanded(
                       child: TextFormField(
                           textAlign: TextAlign.center,
@@ -360,7 +361,20 @@ class _MPSsState_Write extends State<Page2> {
                             FilteringTextInputFormatter.allow(RegExp(r'[0-9]'),)
                           ]
                       ),
-                    )
+                    ),
+                    const SizedBox(width: 30),
+                    IconButton(
+                      icon: const Icon(Icons.copy, size: 28),
+                      onPressed: () {
+                        if(tag1_s.isNotEmpty && tag2_s.isNotEmpty && tag3_s.isNotEmpty && tag4_s.isNotEmpty){
+                          String txt = tag1_s + tag2_s + tag3_s + tag4_s;
+                          Clipboard.setData(ClipboardData(text: txt));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Text Copied")),
+                          );
+                        }
+                      },
+                    ),
                   ],
                 )
             )
@@ -385,7 +399,7 @@ class _MPSsState_Write extends State<Page2> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(width: 20),
             Text(
               "JPYC",
               style: TextStyle(
@@ -434,7 +448,7 @@ class _MPSsState_Write extends State<Page2> {
                   color: Colors.black
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(width: 20),
             Expanded(
               child: TextFormField(
                 controller: tag_reciever,
