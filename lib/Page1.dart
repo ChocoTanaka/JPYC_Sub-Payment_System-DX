@@ -55,7 +55,7 @@ class _MPSsState_Read extends State<Page1> {
                   style: const TextStyle(fontSize: 28),
                 ),
                 Text(
-                  EIP712Data().tag_read.isNotEmpty ? tag16toreadtag(EIP712Data().tag_read) : "NO DATA",
+                  EIP712Data().inv !=null ? tag16toreadtag(EIP712Data().inv!.tag16.toString()) : "NO DATA",
                   style: const TextStyle(fontSize: 28),
                 ),
             ],
@@ -64,11 +64,11 @@ class _MPSsState_Read extends State<Page1> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                  "アドレス：",
+                  "支払先：",
                   style: const TextStyle(fontSize: 28),
                 ),
                 Text(
-                  EIP712Data().Address_read.isNotEmpty ? EIP712Data().Address_read : "NO DATA",
+                  EIP712Data().inv !=null ? EIP712Data().inv!.payee : "NO DATA",
                   style: const TextStyle(fontSize: 28),
                 ),
               ],
@@ -81,7 +81,20 @@ class _MPSsState_Read extends State<Page1> {
                   style: const TextStyle(fontSize: 28),
                 ),
                 Text(
-                  EIP712Data().wei_read != "" ? EIP712Data().wei_read + "　JPYC" : "NO DATA",
+                  EIP712Data().inv !=null ? "${GetAmount(EIP712Data().inv!.amount)}　JPYC" : "NO DATA",
+                  style: const TextStyle(fontSize: 28),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  "状態：",
+                  style: const TextStyle(fontSize: 28),
+                ),
+                Text(
+                  EIP712Data().inv !=null ? InvoiceStatus.fromCode(EIP712Data().inv!.status).state : "NO DATA",
                   style: const TextStyle(fontSize: 28),
                 ),
               ],

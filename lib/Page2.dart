@@ -278,7 +278,7 @@ class _MPSsState_Write extends State<Page2> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      "tag:",
+                      "管理番号:",
                       style: const TextStyle(fontSize: 28),
                     ),
                     const SizedBox(width: 20),

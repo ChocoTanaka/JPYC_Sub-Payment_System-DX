@@ -60,11 +60,11 @@
 
 1. ウォレットを接続する
 2. 16桁のタグを入力する
-   <img src="https://raw.githubusercontent.com/ChocoTanaka/Metamask_EIP-681_Pay_Web/subpay-v2/assets/images/screenshot_index.png.png" alt="索引画面" title="索引画面">
+   <img src="https://raw.githubusercontent.com/ChocoTanaka/Metamask_EIP-681_Pay_Web/subpay-v2/assets/images/screenshot_index.png" alt="索引画面" title="索引画面">
 3. ない場合、エラー画面が出ます。
    <img src="https://raw.githubusercontent.com/ChocoTanaka/Metamask_EIP-681_Pay_Web/subpay-v2/assets/images/screenshot_index_error.png" alt="エラー画面" title="エラー画面">
 4. ある場合はこのように表示されます。
-   <img src="https://raw.githubusercontent.com/ChocoTanaka/Metamask_EIP-681_Pay_Web/subpay-v2/assets/images/screenshot_index_2.png.png" alt="確認画面" title="確認画面">
+   <img src="https://raw.githubusercontent.com/ChocoTanaka/Metamask_EIP-681_Pay_Web/subpay-v2/assets/images/screenshot_index_2.png" alt="確認画面" title="確認画面">
 
 ---
 ## 注意

@@ -61,15 +61,19 @@ class MPSs_Home extends State<MPSs_Stateful>{
   @override
   initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Appkit().waitForJsAndInit();
-    });
+
     Appkit().addressNotifier.addListener(_handleAppKitUpdate);
 
     parseQueryParameters();
   }
 
-  void parseQueryParameters() {
+  Future<void> parseQueryParameters() async{
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Appkit().waitForJsAndInit();
+    });
+
+
     final uri = Uri.base;
 
     // ?id=123&address=0xABC... から値を取り出す
@@ -78,7 +82,7 @@ class MPSs_Home extends State<MPSs_Stateful>{
     final String? wei = uri.queryParameters['wei'];
 
     if (wei !=null && id != null && address != null) {
-      _onItemTapped(1);
+
       // 取得したIDとアドレスを使って処理を進める（画面に表示するなど）
       EIP712Data().wei_read = wei;
       EIP712Data().Address_read = address;
@@ -87,6 +91,18 @@ class MPSs_Home extends State<MPSs_Stateful>{
       }
       print("取得したID: $id");
       print("取得したアドレス: $address");
+
+      BigInt tag = BigInt.from(num.tryParse(id)!);
+      final cleanAddr = address.trim().toLowerCase().replaceFirst('0x', '');
+      print(cleanAddr);
+      Invoice? inv = await fetchInvoiceByKey(keyHex: buildInvoiceKeyHex(cleanAddr, tag));
+      if(inv !=null){
+        EIP712Data().inv = inv;
+      }
+      setState(() {
+
+      });
+      _onItemTapped(1);
     }
   }
 

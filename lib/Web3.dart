@@ -33,6 +33,8 @@ class EIP712Data{
   late String Address_read = "";
   late String tag_read ="";
 
+  late Invoice? inv = null;
+
   bool GotStatus(){
     if(this.wei_read !="" && this.tag_read !="" && this.Address_read !=""){
       return true;

@@ -193,7 +193,7 @@ class _MPSsState_Check extends State<Page3> {
 
   Widget indexContainer(String num, Invoice inv){
     return Container(
-      width: 250,
+      width: 200,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(5),
@@ -202,7 +202,7 @@ class _MPSsState_Check extends State<Page3> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            "tag: $num",
+            "管理番号: $num",
             style: const TextStyle(fontSize: 28),
           ),
           const SizedBox(height: 20),

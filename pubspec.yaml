@@ -62,7 +62,7 @@ flutter:
 
   uses-material-design: true
   assets:
-    - assets/images/JPYCPay_192.png
+    - assets/images/JPYCPay_192v2.png
   fonts:
     - family: Noto Sans JP
       fonts:
