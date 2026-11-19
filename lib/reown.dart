@@ -47,7 +47,7 @@ class Appkit {
   String get userAddress => addressNotifier.value;
 
 
-  void waitForJsAndInit() {
+  Future<void> waitForJsAndInit() async{
     // 💡 window 直下に 'initReownApp' というプロパティ（関数）が生えたかチェック
     final bool isJsReady = web.window
         .hasProperty('initReownApp'.toJS)

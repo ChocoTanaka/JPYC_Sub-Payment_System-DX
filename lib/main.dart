@@ -61,7 +61,6 @@ class MPSs_Home extends State<MPSs_Stateful>{
   @override
   initState() {
     super.initState();
-
     Appkit().addressNotifier.addListener(_handleAppKitUpdate);
 
     parseQueryParameters();
@@ -69,10 +68,7 @@ class MPSs_Home extends State<MPSs_Stateful>{
 
   Future<void> parseQueryParameters() async{
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Appkit().waitForJsAndInit();
-    });
-
+    await Appkit().waitForJsAndInit();
 
     final uri = Uri.base;
 
@@ -82,7 +78,7 @@ class MPSs_Home extends State<MPSs_Stateful>{
     final String? wei = uri.queryParameters['wei'];
 
     if (wei !=null && id != null && address != null) {
-
+      _onItemTapped(1);
       // 取得したIDとアドレスを使って処理を進める（画面に表示するなど）
       EIP712Data().wei_read = wei;
       EIP712Data().Address_read = address;
@@ -102,7 +98,6 @@ class MPSs_Home extends State<MPSs_Stateful>{
       setState(() {
 
       });
-      _onItemTapped(1);
     }
   }
 
