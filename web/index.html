@@ -33,7 +33,7 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-<script type="module" src="./js/reown-appkit4.js"></script>
+<script type="module" src="./js/reown-appkit5.js"></script>
 <script>
   let appKitInstance = null;
   let wagmiAdapterInstance = null;
@@ -252,6 +252,35 @@
       return false;
     }
   };
+
+  //追加　索引
+    window.readContractJS = async function(contractAddress, abiJson, functionName, argsJson) {
+          
+      if (!wagmiAdapterInstance) {
+      console.error("Adapter not ready");
+      return null;
+    }
+    try {
+      const { readContract } = window.ReownCore;
+      const config = wagmiAdapterInstance.wagmiConfig;
+      const abi = JSON.parse(abiJson);
+      const args = JSON.parse(argsJson);
+
+      const result = await readContract(config, {
+        address: contractAddress,
+        abi: abi,
+        functionName: functionName,
+        args: args,
+        chainId: 137,
+      });
+
+      // BigInt を含むオブジェクトを安全に文字列化
+      return JSON.stringify(result, (_, v) => typeof v === 'bigint' ? v.toString() : v);
+    } catch (e) {
+      console.error("Contract Read Error:", e);
+      return "__ERROR__:" + e.message;
+    }
+  }
 </script>
 <script src="flutter_bootstrap.js" async></script>
 </body>

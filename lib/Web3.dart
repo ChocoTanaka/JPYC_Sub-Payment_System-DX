@@ -1,10 +1,15 @@
 import 'dart:convert';
-import 'package:erc681pay_dx/reown.dart';
+import 'dart:typed_data';
+import 'package:web3dart/crypto.dart';
 
 import "dart:js_interop";
 
 @JS('writeContractJS')
 external JSPromise<JSString> _writeContractJS(JSString contractAddress,JSString abiJson,JSString functionName,JSString args);
+
+@JS('readContractJS')
+external JSPromise<JSString> _readContractJS(JSString contractAddress,JSString abiJson,JSString functionName,JSString argsJson);
+
 
 final String jpycAddress = "0xE7C3D8C9a439feDe00D2600032D5dB0Be71C3c29";
 
@@ -104,6 +109,25 @@ const AbiMap_approve =
 // jsonEncode で完全に文字列化してから渡す
 final abiJson_approve = jsonEncode(AbiMap_approve);
 
+final String abiJson_read = jsonEncode([
+  {
+    "type": "function",
+    "name": "invoices",
+    "stateMutability": "view",
+    "inputs": [
+      {"name": "", "type": "bytes32", "internalType": "bytes32"}
+    ],
+    "outputs": [
+      {"name": "tag16", "type": "uint256", "internalType": "uint256"},
+      {"name": "payee", "type": "address", "internalType": "address"},
+      {"name": "tokenAddress", "type": "address", "internalType": "address"},
+      {"name": "amount", "type": "uint256", "internalType": "uint256"},
+      {"name": "deadline", "type": "uint256", "internalType": "uint256"},
+      {"name": "status", "type": "uint8", "internalType": "enum InvoiceTx.InvoiceStatus"}
+    ]
+  }
+]);
+
 //インボイスの作成
 Future<void>CreateInvoice({
   required String tag16,
@@ -167,6 +191,142 @@ Future<void>Pay({
 
 }
 
+//こっから索引
+
+enum InvoiceStatus {
+  unpaid("未払い", 0),
+  Paid("支払済み", 1),
+  Expired("期限切れ", 2),
+  Undefined("未定義", 3);
+
+  const InvoiceStatus(this.state,this.code);
+  final String state;
+  final int code;
+
+  // int -> enum（見つからない場合はフォールバックや例外を指定）
+  static InvoiceStatus fromCode(int code) {
+    return InvoiceStatus.values.firstWhere(
+          (e) => e.code == code,
+      orElse: () => InvoiceStatus.Undefined,
+    );
+  }
+}
+
+
+class Invoice {
+  final BigInt tag16;
+  final String payee;
+  final String tokenAddress;
+  final BigInt amount;
+  final BigInt deadline;
+  final int status; // 0: Unpaid, 1: Paid, 2: Expired, 3: Undefined など
+
+  Invoice({
+    required this.tag16,
+    required this.payee,
+    required this.tokenAddress,
+    required this.amount,
+    required this.deadline,
+    required this.status,
+  });
+
+  factory Invoice.fromContractResult(dynamic raw) {
+    // viem/wagmi の返却が Map（名前付き）か List（タプル順）かの両方に対応
+    if (raw is Map<String, dynamic>) {
+      return Invoice(
+        tag16: BigInt.parse(raw['tag16'].toString()),
+        payee: raw['payee'].toString(),
+        tokenAddress: raw['tokenAddress'].toString(),
+        amount: BigInt.parse(raw['amount'].toString()),
+        deadline: BigInt.parse(raw['deadline'].toString()),
+        status: int.parse(raw['status'].toString()),
+      );
+    } else if (raw is List) {
+      return Invoice(
+        tag16: BigInt.parse(raw[0].toString()),
+        payee: raw[1].toString(),
+        tokenAddress: raw[2].toString(),
+        amount: BigInt.parse(raw[3].toString()),
+        deadline: BigInt.parse(raw[4].toString()),
+        status: int.parse(raw[5].toString()),
+      );
+    }
+    throw FormatException('Unexpected invoice format: $raw');
+  }
+}
+
+class InvoiceLookup {
+  final Map<String, Invoice> _invoices = {};
+
+  String _makeKey(String payee, BigInt tag16) {
+    final normalizedPayee = payee.trim().toLowerCase();
+    return '$normalizedPayee#${tag16.toString()}';
+  }
+
+  /// 登録・取得した請求書を索引に追加・更新
+  void put(Invoice invoice) {
+    _invoices[_makeKey(invoice.payee, invoice.tag16)] = invoice;
+  }
+
+  /// 画面入力の tag16 と payee アドレスから照合
+  Invoice? find(String payee, BigInt tag16) {
+    return _invoices[_makeKey(payee, tag16)];
+  }
+}
+
+Future<Invoice?> fetchInvoiceByKey({
+  required String keyHex, // 0x... の bytes32
+}) async {
+  final argsJson = jsonEncode([keyHex]);
+
+  final jsResult = await _readContractJS(
+    contract.toJS,
+    abiJson_read.toJS,
+    "invoices".toJS,
+    argsJson.toJS,
+  ).toDart;
+
+  final rawStr = jsResult?.toDart;
+  if (rawStr == null || rawStr.isEmpty) return null;
+  if (rawStr.startsWith('__ERROR__:')) {
+    throw Exception(rawStr);
+  }
+
+  final decoded = jsonDecode(rawStr);
+  final invoice = Invoice.fromContractResult(decoded);
+
+  // 未登録（payee がゼロアドレス）の場合は null 扱い
+  if (invoice.payee == '0x0000000000000000000000000000000000000000') {
+    return null;
+  }
+  return invoice;
+}
+
+String buildInvoiceKeyHex(String payeeHex, BigInt tag16) {
+  // 1. address (20バイト)
+  final cleanAddr = payeeHex.trim().toLowerCase().replaceFirst('0x', '');
+  if (cleanAddr.length != 40) {
+    throw ArgumentError('Invalid address: $payeeHex');
+  }
+  final addrBytes = hexToBytes(cleanAddr); // 20 bytes
+
+  // 2. uint256 (32バイト・ビッグエンディアン)
+  final tagBytes = Uint8List(32);
+  var v = tag16;
+  if (v < BigInt.zero) {
+    throw ArgumentError('tag16 must be non-negative');
+  }
+  for (int i = 31; i >= 0; i--) {
+    tagBytes[i] = (v & BigInt.from(0xff)).toInt();
+    v = v >> 8;
+  }
+
+  // 3. abi.encodePacked(payee, tag16) を連結して keccak256
+  final packed = Uint8List(52)..setRange(0, 20, addrBytes)..setRange(20, 52, tagBytes);
+  final digest = keccak256(packed); // 32 bytes
+
+  return '0x${bytesToHex(digest, include0x: false)}';
+}
 
 //締め切りの次の日の00:00まで
 BigInt SetDeadline(DateTime time){
@@ -179,6 +339,11 @@ BigInt SetWei(int Amount){
   return Wei;
 }
 
+BigInt GetAmount(BigInt Wei){
+    BigInt Amount = Wei ~/ BigInt.from(10).pow(JPYCDecimal);
+
+    return Amount;
+}
 
 String filltag(String tag) {
   List<String> tags = [tag.substring(4*0,4*1),tag.substring(4*1,4*2),tag.substring(4*2,4*3),tag.substring(4*3,4*4)];

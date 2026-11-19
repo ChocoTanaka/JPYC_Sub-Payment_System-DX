@@ -1,6 +1,7 @@
 import 'dart:js_interop';
 import 'package:erc681pay_dx/Web3.dart';
 import 'package:flutter/material.dart';
+import 'Page3.dart';
 import 'reown.dart';
 import 'Page1.dart';
 import 'Page2.dart';
@@ -29,7 +30,7 @@ class MPSs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'JPYC Sub-Payment System v2',
+      title: 'JPYC Sub-Payment System DX v2',
       theme: ThemeData(
         fontFamily: "Noto Sans JP",
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -134,6 +135,13 @@ class MPSs_Home extends State<MPSs_Stateful>{
               leading: Icon(Icons.attach_money_outlined,size: 36),
               title: Text('Read',style: const TextStyle(fontSize: 24)),
             ),
+            ListTile(
+              onTap: () {
+                _onItemTapped(2);
+              },
+              leading: Icon(Icons.book,size: 36),
+              title: Text('Index',style: const TextStyle(fontSize: 24)),
+            ),
           ],
         )
     );
@@ -143,12 +151,14 @@ class MPSs_Home extends State<MPSs_Stateful>{
     final _screens = [
       Page2(),
       Page1(),
+      Page3(),
     ];
 
     // 各画面のタイトルのリスト
     final List<String> _titles = [
-      'Write Invoice JPYC Sub-Payment System v2',
-      'Read Invoice JPYC Sub-Payment System v2',
+      'Write Invoice JPYC Sub-Payment System DX v2',
+      'Read Invoice JPYC Sub-Payment System DX v2',
+      'Index JPYC Sub-Payment System DX v2'
     ];
 
     return Scaffold(

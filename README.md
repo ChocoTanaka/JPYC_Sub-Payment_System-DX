@@ -55,13 +55,16 @@
 詳細な説明・スクリーンショットは[SubPayment解説2.pdf](https://github.com/ChocoTanaka/Metamask_EIP-681_Pay_Web/blob/subpay-v2/SubPaymentv2%E8%A7%A3%E8%AA%AC.pdf)を参照してください。
 
 ## 索引
-こちらから、payeeが自分のアドレスのものを索引してください。
 
-[リンク](https://polygonscan.com/address/0xA14E673D100cfe159CFfA4bACd6fd1BfEcbAff88#events)
+索引のページを作成いたしました。
 
-もしくは、polygonscanから自分のアドレスを検索お願いいたします。
-
-[リンク](https://polygonscan.com/)
+1. ウォレットを接続する
+2. 16桁のタグを入力する
+   <img src="https://raw.githubusercontent.com/ChocoTanaka/Metamask_EIP-681_Pay_Web/subpay-v2/assets/images/screenshot_index.png.png" alt="索引画面" title="索引画面">
+3. ない場合、エラー画面が出ます。
+   <img src="https://raw.githubusercontent.com/ChocoTanaka/Metamask_EIP-681_Pay_Web/subpay-v2/assets/images/screenshot_index_error.png" alt="エラー画面" title="エラー画面">
+4. ある場合はこのように表示されます。
+   <img src="https://raw.githubusercontent.com/ChocoTanaka/Metamask_EIP-681_Pay_Web/subpay-v2/assets/images/screenshot_index_2.png.png" alt="確認画面" title="確認画面">
 
 ---
 ## 注意
